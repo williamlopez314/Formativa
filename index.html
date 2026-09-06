@@ -1,0 +1,1436 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía Interactiva de Evaluación Formativa - Colegio Pucará</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- KaTeX CSS & JS para renderizado correcto de notación matemática LaTeX -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" onload="triggerKaTeX()"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0284c7',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            900: '#0c4a6e',
+                        },
+                        accent: {
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+        }
+        .dark .glass-panel {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px);
+        }
+        .timer-glow {
+            text-shadow: 0 0 25px rgba(14, 165, 233, 0.6);
+        }
+        .pulse-subtle {
+            animation: pulseSubtle 2s infinite ease-in-out;
+        }
+        @keyframes pulseSubtle {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.02); opacity: 0.92; }
+        }
+        /* Ajuste especial para visibilidad de fórmulas KaTeX en sala de clases */
+        .katex {
+            font-size: 1.35em !important;
+            line-height: 1.2;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans min-h-full flex flex-col transition-colors duration-300 antialiased selection:bg-sky-500 selection:text-white text-base">
+
+    <!-- Top Header / Bar -->
+    <header class="bg-slate-950/95 border-b border-slate-800 sticky top-0 z-50 backdrop-blur-md px-4 lg:px-8 py-3.5">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+                <div class="p-2.5 bg-gradient-to-tr from-sky-600 to-indigo-600 rounded-xl shadow-md text-white shrink-0">
+                    <i data-lucide="box" class="w-7 h-7"></i>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full bg-sky-500/20 text-sky-300 border border-sky-500/40">1° Medio</span>
+                        <span class="text-sm text-slate-300 font-semibold">Colegio Pucará • 2026</span>
+                    </div>
+                    <h1 class="text-xl md:text-2xl font-black text-white leading-tight">Evaluación Formativa Guiada: Volumen de Cuerpos Geométricos</h1>
+                </div>
+            </div>
+
+            <!-- Docentes & Quick Actions -->
+            <div class="flex items-center gap-4 text-sm text-slate-200">
+                <div class="hidden lg:flex flex-col text-right border-r border-slate-800 pr-4">
+                    <span class="text-slate-300">Docente: <strong class="text-white">William López G.</strong></span>
+                    <span class="text-slate-300">DIE: <strong class="text-white">Yasmin Mardones G.</strong></span>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <button id="soundToggleBtn" onclick="toggleSound()" class="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors flex items-center gap-2 font-bold" title="Sonido de alertas">
+                        <i id="soundIcon" data-lucide="volume-2" class="w-5 h-5 text-emerald-400"></i>
+                        <span id="soundText" class="hidden sm:inline">Sonido On</span>
+                    </button>
+                    
+                    <button onclick="toggleFullscreen()" class="p-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white transition-colors flex items-center gap-2 font-bold shadow-lg" title="Pantalla Completa Proyector">
+                        <i data-lucide="maximize" class="w-5 h-5"></i>
+                        <span class="hidden sm:inline">Proyectar Aula</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 lg:p-8 flex flex-col gap-6">
+
+        <!-- Stage Timeline Navigation Bar -->
+        <nav aria-label="Fases de la evaluación" class="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
+            
+            <!-- Phase 1 Tab -->
+            <button id="tab-phase-1" onclick="switchPhase(1)" class="phase-tab text-left p-4 rounded-2xl border border-sky-500/50 bg-slate-800/90 hover:bg-slate-800 transition-all relative overflow-hidden group shadow-lg">
+                <div class="flex items-center justify-between mb-1.5">
+                    <span class="text-xs font-black uppercase tracking-wider text-sky-300 flex items-center gap-1.5">
+                        <i data-lucide="brain" class="w-4 h-4"></i> Fase 1
+                    </span>
+                    <span class="text-xs font-mono font-black bg-sky-500/30 text-sky-200 px-2.5 py-0.5 rounded-full">4 Min</span>
+                </div>
+                <h3 class="font-black text-base md:text-lg text-white group-hover:text-sky-300 transition-colors">Activación Metacognitiva</h3>
+                <p class="text-xs md:text-sm text-slate-300 line-clamp-1 font-medium">Disposición, ruta y prevención de errores</p>
+                <div id="bar-phase-1" class="absolute bottom-0 left-0 h-1.5 bg-sky-400 transition-all duration-300 w-full"></div>
+            </button>
+
+            <!-- Phase 2 Tab -->
+            <button id="tab-phase-2" onclick="switchPhase(2)" class="phase-tab text-left p-4 rounded-2xl border border-slate-800 bg-slate-900/70 hover:bg-slate-800/80 transition-all relative overflow-hidden group opacity-85 hover:opacity-100">
+                <div class="flex items-center justify-between mb-1.5">
+                    <span class="text-xs font-black uppercase tracking-wider text-amber-300 flex items-center gap-1.5">
+                        <i data-lucide="pencil" class="w-4 h-4"></i> Fase 2
+                    </span>
+                    <span class="text-xs font-mono font-black bg-amber-500/30 text-amber-200 px-2.5 py-0.5 rounded-full">45 Min</span>
+                </div>
+                <h3 class="font-black text-base md:text-lg text-white group-hover:text-amber-300 transition-colors">Evaluación Formativa</h3>
+                <p class="text-xs md:text-sm text-slate-300 line-clamp-1 font-medium">Trabajo individual (26 puntos totales)</p>
+                <div id="bar-phase-2" class="absolute bottom-0 left-0 h-1.5 bg-amber-400 transition-all duration-300 w-0"></div>
+            </button>
+
+            <!-- Phase 3 Tab -->
+            <button id="tab-phase-3" onclick="switchPhase(3)" class="phase-tab text-left p-4 rounded-2xl border border-slate-800 bg-slate-900/70 hover:bg-slate-800/80 transition-all relative overflow-hidden group opacity-85 hover:opacity-100">
+                <div class="flex items-center justify-between mb-1.5">
+                    <span class="text-xs font-black uppercase tracking-wider text-indigo-300 flex items-center gap-1.5">
+                        <i data-lucide="presentation" class="w-4 h-4"></i> Fase 3
+                    </span>
+                    <span class="text-xs font-mono font-black bg-indigo-500/30 text-indigo-200 px-2.5 py-0.5 rounded-full">25 Min</span>
+                </div>
+                <h3 class="font-black text-base md:text-lg text-white group-hover:text-indigo-300 transition-colors">Retroalimentación Guiada</h3>
+                <p class="text-xs md:text-sm text-slate-300 line-clamp-1 font-medium">Revisión en pizarra y pauta interactiva</p>
+                <div id="bar-phase-3" class="absolute bottom-0 left-0 h-1.5 bg-indigo-400 transition-all duration-300 w-0"></div>
+            </button>
+
+            <!-- Phase 4 Tab -->
+            <button id="tab-phase-4" onclick="switchPhase(4)" class="phase-tab text-left p-4 rounded-2xl border border-slate-800 bg-slate-900/70 hover:bg-slate-800/80 transition-all relative overflow-hidden group opacity-85 hover:opacity-100">
+                <div class="flex items-center justify-between mb-1.5">
+                    <span class="text-xs font-black uppercase tracking-wider text-emerald-300 flex items-center gap-1.5">
+                        <i data-lucide="check-circle-2" class="w-4 h-4"></i> Fase 4
+                    </span>
+                    <span class="text-xs font-mono font-black bg-emerald-500/30 text-emerald-200 px-2.5 py-0.5 rounded-full">6 Min</span>
+                </div>
+                <h3 class="font-black text-base md:text-lg text-white group-hover:text-emerald-300 transition-colors">Autoevaluación & Cierre</h3>
+                <p class="text-xs md:text-sm text-slate-300 line-clamp-1 font-medium">Reflexión metacognitiva y compromiso</p>
+                <div id="bar-phase-4" class="absolute bottom-0 left-0 h-1.5 bg-emerald-400 transition-all duration-300 w-0"></div>
+            </button>
+        </nav>
+
+        <!-- Interactive Timer Card (Ampliado para Proyección en Sala) -->
+        <section aria-label="Temporizador de la fase actual" class="bg-slate-950 border-2 border-slate-800 rounded-3xl p-6 md:p-8 shadow-2xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6">
+            <!-- Background Ambient Glow -->
+            <div id="timerGlow" class="absolute inset-0 bg-sky-600/15 blur-3xl pointer-events-none transition-colors duration-500"></div>
+
+            <div class="flex flex-col md:flex-row items-center gap-6 relative z-10 text-center md:text-left w-full md:w-auto">
+                <!-- Clock Display Gigante -->
+                <div class="bg-slate-900/95 border-2 border-slate-700 px-8 py-5 rounded-3xl shadow-inner flex flex-col items-center justify-center min-w-[260px] md:min-w-[320px]">
+                    <span class="text-xs md:text-sm uppercase font-black text-sky-400 tracking-wider mb-1 flex items-center gap-1.5">
+                        <i data-lucide="clock" class="w-4 h-4 text-sky-400"></i> Tiempo Restante de la Fase
+                    </span>
+                    <div id="timerDisplay" class="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-mono font-black text-white tracking-tight timer-glow leading-none my-1">
+                        04:00
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <div class="flex items-center justify-center md:justify-start gap-3">
+                        <span id="phaseBadge" class="text-xs md:text-sm font-black uppercase tracking-wider px-3 py-1 rounded-full bg-sky-500/20 text-sky-300 border border-sky-500/40">Fase 1 de 4</span>
+                        <span id="timerStatus" class="text-xs md:text-sm font-bold text-slate-300 flex items-center gap-1.5">
+                            <span class="w-3 h-3 rounded-full bg-amber-400 animate-ping"></span> Listo para iniciar
+                        </span>
+                    </div>
+                    <h2 id="phaseTitle" class="text-2xl sm:text-3xl md:text-4xl font-black text-white leading-snug">Activación Metacognitiva Previa</h2>
+                    <p id="phaseDesc" class="text-base md:text-lg text-slate-300 font-medium max-w-xl leading-relaxed">Los estudiantes completan la hoja previa de 4 minutos antes de la prueba.</p>
+                </div>
+            </div>
+
+            <!-- Timer Controls -->
+            <div class="flex flex-wrap items-center justify-center gap-3 relative z-10 w-full md:w-auto">
+                <button id="startPauseBtn" onclick="toggleTimer()" class="px-7 py-4 rounded-2xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-black text-lg md:text-xl shadow-xl shadow-sky-500/30 flex items-center gap-3 transition-all active:scale-95">
+                    <i id="playIcon" data-lucide="play" class="w-6 h-6 fill-white"></i>
+                    <span id="playBtnText">Iniciar Fase</span>
+                </button>
+
+                <button onclick="addTime(1)" class="px-4 py-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 text-sm md:text-base font-black flex items-center gap-1 transition-all" title="+1 Minuto">
+                    +1m
+                </button>
+
+                <button onclick="addTime(5)" class="px-4 py-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 text-sm md:text-base font-black flex items-center gap-1 transition-all" title="+5 Minutos">
+                    +5m
+                </button>
+
+                <button onclick="resetTimer()" class="p-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-all" title="Reiniciar Temporizador">
+                    <i data-lucide="rotate-ccw" class="w-5 h-5"></i>
+                </button>
+
+                <button onclick="nextPhase()" class="px-5 py-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 text-sm md:text-base font-black flex items-center gap-2 transition-all">
+                    Siguiente <i data-lucide="chevron-right" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- PHASE 1 CONTENT PANEL -->
+        <section id="panel-phase-1" class="phase-panel space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+                <!-- Mindset & Resolution Route Card -->
+                <div class="lg:col-span-2 bg-slate-900 border-2 border-slate-800 rounded-3xl p-6 md:p-8 space-y-6">
+                    <div class="flex items-center gap-3 border-b border-slate-800 pb-4">
+                        <div class="p-3 rounded-2xl bg-sky-500/20 text-sky-300 border border-sky-500/30">
+                            <i data-lucide="compass" class="w-7 h-7"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl md:text-2xl font-black text-white">1. Disposición Mental & Ruta de Resolución</h3>
+                            <p class="text-sm md:text-base text-slate-300 font-medium">Instrucciones sintetizadas para proyectar en la sala (4 minutos)</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <!-- Mindset Box -->
+                        <div class="bg-slate-950 p-5 rounded-2xl border border-slate-800 space-y-2">
+                            <h4 class="text-sm md:text-base font-black uppercase tracking-wider text-sky-300 flex items-center gap-2">
+                                <i data-lucide="smile" class="w-5 h-5"></i> Enfoque Mental
+                            </h4>
+                            <p class="text-base md:text-lg text-slate-200 leading-relaxed font-medium">
+                                Si sientes dudas o ansiedad: <strong class="text-sky-300 underline underline-offset-4">Respira profundo 5 segundos</strong>. Tienes las herramientas trabajadas en clases y con la app 3D. Mantén el orden.
+                            </p>
+                        </div>
+
+                        <!-- Lema Card -->
+                        <div class="bg-gradient-to-br from-sky-950/80 to-indigo-950/80 p-5 rounded-2xl border-2 border-sky-500/40 flex flex-col justify-center">
+                            <h4 class="text-xs md:text-sm font-black uppercase tracking-wider text-amber-300 mb-2 flex items-center gap-2">
+                                <i data-lucide="sparkles" class="w-5 h-5"></i> Lema de Hoy
+                            </h4>
+                            <blockquote class="text-base md:text-xl font-bold text-sky-100 italic leading-snug">
+                                "Primero visualizo con el boceto, luego identifico la base y finalmente aplico la fórmula con calma."
+                            </blockquote>
+                        </div>
+                    </div>
+
+                    <!-- 5 Step Protocol -->
+                    <div class="space-y-3">
+                        <h4 class="text-sm md:text-base font-black uppercase tracking-wider text-slate-300 flex items-center gap-2">
+                            <i data-lucide="list-checks" class="w-5 h-5 text-sky-400"></i> Secuencia Estricta para Problemas de Desarrollo
+                        </h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-5 gap-3 text-center">
+                            <div class="p-4 bg-slate-950 border border-slate-800 rounded-2xl flex flex-col items-center justify-center space-y-1">
+                                <span class="w-8 h-8 rounded-full bg-sky-500/30 text-sky-300 text-base font-black flex items-center justify-center">1</span>
+                                <span class="text-base font-extrabold text-white">Boceto</span>
+                                <span class="text-xs md:text-sm text-slate-400 font-semibold">Identificar r, a, h</span>
+                            </div>
+                            <div class="p-4 bg-slate-950 border border-slate-800 rounded-2xl flex flex-col items-center justify-center space-y-1">
+                                <span class="w-8 h-8 rounded-full bg-sky-500/30 text-sky-300 text-base font-black flex items-center justify-center">2</span>
+                                <span class="text-base font-extrabold text-white">Área Basal</span>
+                                <span class="text-xs md:text-sm text-slate-400 font-semibold">Calcular $A_b$</span>
+                            </div>
+                            <div class="p-4 bg-slate-950 border border-slate-800 rounded-2xl flex flex-col items-center justify-center space-y-1">
+                                <span class="w-8 h-8 rounded-full bg-sky-500/30 text-sky-300 text-base font-black flex items-center justify-center">3</span>
+                                <span class="text-base font-extrabold text-white">Fórmula</span>
+                                <span class="text-xs md:text-sm text-slate-400 font-semibold">Prisma vs Pirámide</span>
+                            </div>
+                            <div class="p-4 bg-slate-950 border border-slate-800 rounded-2xl flex flex-col items-center justify-center space-y-1">
+                                <span class="w-8 h-8 rounded-full bg-sky-500/30 text-sky-300 text-base font-black flex items-center justify-center">4</span>
+                                <span class="text-base font-extrabold text-white">Cálculo</span>
+                                <span class="text-xs md:text-sm text-slate-400 font-semibold">Operatoria a mano</span>
+                            </div>
+                            <div class="p-4 bg-slate-950 border border-slate-800 rounded-2xl flex flex-col items-center justify-center space-y-1">
+                                <span class="w-8 h-8 rounded-full bg-sky-500/30 text-sky-300 text-base font-black flex items-center justify-center">5</span>
+                                <span class="text-base font-extrabold text-white">Respuesta</span>
+                                <span class="text-xs md:text-sm text-slate-400 font-semibold">Unidades cm³ / m³</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Error Prevention Panel -->
+                <div class="bg-slate-900 border-2 border-slate-800 rounded-3xl p-6 space-y-5">
+                    <div class="flex items-center gap-3 border-b border-slate-800 pb-3">
+                        <i data-lucide="shield-alert" class="w-7 h-7 text-amber-400"></i>
+                        <h3 class="text-xl font-black text-white">Prevención de Errores</h3>
+                    </div>
+
+                    <ul class="space-y-4">
+                        <li class="p-4 bg-slate-950 border-2 border-amber-500/30 rounded-2xl flex gap-3.5 items-start">
+                            <i data-lucide="alert-triangle" class="w-6 h-6 text-amber-400 shrink-0 mt-0.5"></i>
+                            <div>
+                                <strong class="text-amber-300 text-base md:text-lg block mb-0.5 font-black">¿Pirámide o Cono?</strong>
+                                <span class="text-slate-200 text-sm md:text-base font-medium">¡DEBES multiplicar por <strong class="text-white font-black text-lg">1/3</strong> (o dividir por 3)!</span>
+                            </div>
+                        </li>
+
+                        <li class="p-4 bg-slate-950 border border-slate-800 rounded-2xl flex gap-3.5 items-start">
+                            <i data-lucide="shapes" class="w-6 h-6 text-sky-400 shrink-0 mt-0.5"></i>
+                            <div>
+                                <strong class="text-sky-300 text-base md:text-lg block mb-0.5 font-black">Área Basal Correcta</strong>
+                                <span class="text-slate-200 text-sm md:text-base font-medium">Cuadrado = $a^2$, Rectángulo = $a \cdot b$, Círculo = $\pi r^2$.</span>
+                            </div>
+                        </li>
+
+                        <li class="p-4 bg-slate-950 border border-slate-800 rounded-2xl flex gap-3.5 items-start">
+                            <i data-lucide="calculator" class="w-6 h-6 text-rose-400 shrink-0 mt-0.5"></i>
+                            <div>
+                                <strong class="text-rose-300 text-base md:text-lg block mb-0.5 font-black">Cálculos a Mano</strong>
+                                <span class="text-slate-200 text-sm md:text-base font-medium">Sin calculadora. Atención al multiplicar por $\pi \approx 3{,}14$ y la coma.</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- PHASE 2 CONTENT PANEL -->
+        <section id="panel-phase-2" class="phase-panel space-y-6 hidden">
+            <!-- Alert Banner Carousel (Ampliado) -->
+            <div class="bg-gradient-to-r from-amber-950/90 via-slate-900 to-slate-900 border-2 border-amber-500/40 rounded-3xl p-5 md:p-6 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl">
+                <div class="flex items-center gap-4">
+                    <div class="p-3 rounded-2xl bg-amber-500/20 text-amber-300 shrink-0">
+                        <i data-lucide="bell-ring" class="w-7 h-7 animate-bounce"></i>
+                    </div>
+                    <div>
+                        <span class="text-xs md:text-sm font-black uppercase tracking-wider text-amber-300">Recordatorio Activo para el Curso</span>
+                        <p id="rotativeTip" class="text-base md:text-xl font-extrabold text-white mt-0.5">
+                            💡 En el Ítem II el boceto o dibujo del cuerpo geométrico es OBLIGATORIO y lleva puntaje.
+                        </p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 shrink-0">
+                    <span class="text-sm font-mono font-bold text-slate-300 bg-slate-800 px-3 py-1 rounded-xl">Tip <span id="tipIndex" class="text-amber-400 font-extrabold">1</span>/4</span>
+                </div>
+            </div>
+
+            <!-- Test Breakdown & Guidelines -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+                <!-- Item I Summary -->
+                <div class="bg-slate-900 border-2 border-slate-800 rounded-3xl p-6 space-y-5">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-9 h-9 rounded-xl bg-amber-500/20 text-amber-300 text-base font-black flex items-center justify-center">I</span>
+                            <h3 class="font-black text-white text-lg md:text-xl">Selección Múltiple</h3>
+                        </div>
+                        <span class="text-sm font-black bg-amber-500/20 text-amber-300 px-3 py-1 rounded-full border border-amber-500/30">10 Puntos</span>
+                    </div>
+
+                    <ul class="space-y-3 text-sm md:text-base">
+                        <li class="flex items-center justify-between p-3 rounded-xl bg-slate-950 border border-slate-800 font-bold">
+                            <span>5 Preguntas de alternativa única</span>
+                            <span class="text-amber-400">2 pts c/u</span>
+                        </li>
+                        <li class="p-3 rounded-xl bg-slate-950 border border-slate-800 text-slate-200">
+                            <strong>P1:</strong> Relación volumen pirámide vs prisma
+                        </li>
+                        <li class="p-3 rounded-xl bg-slate-950 border border-slate-800 text-slate-200">
+                            <strong>P2:</strong> Fórmula general pirámide/cono ($V = \frac{1}{3} A_b \cdot h$)
+                        </li>
+                        <li class="p-3 rounded-xl bg-slate-950 border border-slate-800 text-slate-200">
+                            <strong>P3:</strong> Volumen de cilindro en términos de $\pi$
+                        </li>
+                        <li class="p-3 rounded-xl bg-slate-950 border border-slate-800 text-slate-200">
+                            <strong>P4:</strong> Vaciado de cono en cilindro
+                        </li>
+                        <li class="p-3 rounded-xl bg-slate-950 border border-slate-800 text-slate-200">
+                            <strong>P5:</strong> Duplicar la altura del cilindro
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Item II Summary -->
+                <div class="bg-slate-900 border-2 border-slate-800 rounded-3xl p-6 space-y-5">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-9 h-9 rounded-xl bg-indigo-500/20 text-indigo-300 text-base font-black flex items-center justify-center">II</span>
+                            <h3 class="font-black text-white text-lg md:text-xl">Resolución de Problemas</h3>
+                        </div>
+                        <span class="text-sm font-black bg-indigo-500/20 text-indigo-300 px-3 py-1 rounded-full border border-indigo-500/30">16 Puntos</span>
+                    </div>
+
+                    <div class="space-y-3 text-sm md:text-base">
+                        <div class="p-3.5 bg-slate-950 border border-slate-800 rounded-2xl space-y-1">
+                            <div class="flex justify-between font-black text-white text-base">
+                                <span>Prob. 1: Depósito Rectangular</span>
+                                <span class="text-indigo-400">5 pts</span>
+                            </div>
+                            <p class="text-slate-300 font-medium">Prisma $4\text{ m} \times 2\text{ m} \times 3\text{ m}$. Boceto obligatorio.</p>
+                        </div>
+
+                        <div class="p-3.5 bg-slate-950 border border-slate-800 rounded-2xl space-y-1">
+                            <div class="flex justify-between font-black text-white text-base">
+                                <span>Prob. 2: Lata Cilíndrica</span>
+                                <span class="text-indigo-400">5 pts</span>
+                            </div>
+                            <p class="text-slate-300 font-medium">$r = 5\text{ cm}$, $h = 8\text{ cm}$. Considerar $\pi \approx 3{,}14$.</p>
+                        </div>
+
+                        <div class="p-3.5 bg-slate-950 border border-slate-800 rounded-2xl space-y-1">
+                            <div class="flex justify-between font-black text-white text-base">
+                                <span>Prob. 3: Techo Piramidal</span>
+                                <span class="text-indigo-400">6 pts</span>
+                            </div>
+                            <p class="text-slate-300 font-medium">Pirámide base cuadrada $6\text{ m}$, $h = 4\text{ m}$ + pregunta de prisma.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rules & Exam Standards -->
+                <div class="bg-slate-900 border-2 border-slate-800 rounded-3xl p-6 space-y-5">
+                    <div class="flex items-center gap-2.5 border-b border-slate-800 pb-3">
+                        <i data-lucide="check-square" class="w-7 h-7 text-emerald-400"></i>
+                        <h3 class="text-xl font-black text-white">Normas de Evaluación</h3>
+                    </div>
+
+                    <div class="space-y-4 text-sm md:text-base text-slate-200">
+                        <div class="p-3.5 bg-slate-950 border border-slate-800 rounded-2xl flex items-center gap-3.5">
+                            <i data-lucide="clock-4" class="w-6 h-6 text-sky-400 shrink-0"></i>
+                            <div>
+                                <strong class="text-white block font-black text-base">45 minutos individuales</strong>
+                                <span class="text-slate-300 font-medium">Maneja bien tu tiempo para completar ambas secciones.</span>
+                            </div>
+                        </div>
+
+                        <div class="p-3.5 bg-slate-950 border border-slate-800 rounded-2xl flex items-center gap-3.5">
+                            <i data-lucide="pencil-ruler" class="w-6 h-6 text-amber-400 shrink-0"></i>
+                            <div>
+                                <strong class="text-white block font-black text-base">Lápiz Grafito y Pasta</strong>
+                                <span class="text-slate-300 font-medium">Grafito para desarrollos/bocetos. Pasta azul/negro para respuesta final.</span>
+                            </div>
+                        </div>
+
+                        <div class="p-3.5 bg-slate-950 border border-slate-800 rounded-2xl flex items-center gap-3.5">
+                            <i data-lucide="ban" class="w-6 h-6 text-rose-400 shrink-0"></i>
+                            <div>
+                                <strong class="text-white block font-black text-base">Sin Calculadoras</strong>
+                                <span class="text-slate-300 font-medium">No se permite uso de calculadora ni teléfonos móviles.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PHASE 3 CONTENT PANEL (RETROALIMENTACIÓN GUIADA UNIPARTITA PASO A PASO) -->
+        <section id="panel-phase-3" class="phase-panel space-y-6 hidden">
+
+            <!-- Sub Navigation Tabs for Items & Interactive Stepper Header -->
+            <div class="bg-slate-900 border-2 border-indigo-500/40 rounded-3xl p-5 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="flex flex-wrap items-center gap-3 w-full md:w-auto justify-center md:justify-start">
+                    <button id="btn-sol-item1" onclick="switchSolTab('item1')" class="px-6 py-3.5 rounded-2xl font-black text-base md:text-lg bg-indigo-600 text-white shadow-lg transition-all flex items-center gap-2">
+                        <i data-lucide="check-square" class="w-5 h-5"></i>
+                        Ítem I: Selección Múltiple
+                    </button>
+                    <button id="btn-sol-item2" onclick="switchSolTab('item2')" class="px-6 py-3.5 rounded-2xl font-black text-base md:text-lg bg-slate-800 text-slate-300 hover:text-white transition-all flex items-center gap-2">
+                        <i data-lucide="pen-tool" class="w-5 h-5"></i>
+                        Ítem II: Problemas de Desarrollo
+                    </button>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <span class="text-xs md:text-sm font-extrabold uppercase tracking-widest text-indigo-300 bg-indigo-950/80 border border-indigo-500/40 px-4 py-2 rounded-full flex items-center gap-2">
+                        <i data-lucide="monitor" class="w-4 h-4 text-sky-400"></i> Modo Proyector Aula • 1 Ejercicio a la Vez
+                    </span>
+                </div>
+            </div>
+
+            <!-- SOL_TAB: ITEM I (SELECCIÓN MÚLTIPLE - 1 PREGUNTA A LA VEZ) -->
+            <div id="sol-tab-item1" class="space-y-6">
+                <!-- Stepper Bar Item I -->
+                <div class="flex flex-wrap items-center justify-between gap-3 bg-slate-950 border border-slate-800 p-4 rounded-2xl">
+                    <div class="flex items-center gap-2">
+                        <span id="qStepperBadge" class="text-sm font-black uppercase tracking-wider text-amber-300 bg-amber-500/20 border border-amber-500/30 px-3.5 py-1.5 rounded-xl">Pregunta 1 de 5</span>
+                    </div>
+
+                    <!-- Direct Quick Jump Buttons -->
+                    <div class="flex items-center gap-2">
+                        <button onclick="showSolItem1(0)" id="qStepBtn-0" class="w-10 h-10 rounded-xl font-black text-base transition-all bg-indigo-600 text-white shadow-md">1</button>
+                        <button onclick="showSolItem1(1)" id="qStepBtn-1" class="w-10 h-10 rounded-xl font-black text-base transition-all bg-slate-800 text-slate-300 hover:bg-slate-700">2</button>
+                        <button onclick="showSolItem1(2)" id="qStepBtn-2" class="w-10 h-10 rounded-xl font-black text-base transition-all bg-slate-800 text-slate-300 hover:bg-slate-700">3</button>
+                        <button onclick="showSolItem1(3)" id="qStepBtn-3" class="w-10 h-10 rounded-xl font-black text-base transition-all bg-slate-800 text-slate-300 hover:bg-slate-700">4</button>
+                        <button onclick="showSolItem1(4)" id="qStepBtn-4" class="w-10 h-10 rounded-xl font-black text-base transition-all bg-slate-800 text-slate-300 hover:bg-slate-700">5</button>
+                    </div>
+
+                    <!-- Prev / Next Controls -->
+                    <div class="flex items-center gap-2">
+                        <button onclick="prevSolItem1()" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm flex items-center gap-1.5 transition-all">
+                            <i data-lucide="chevron-left" class="w-5 h-5"></i> Anterior
+                        </button>
+                        <button onclick="nextSolItem1()" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-black text-sm flex items-center gap-1.5 shadow-lg transition-all">
+                            Siguiente <i data-lucide="chevron-right" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Single Question Card Display Container -->
+                <div class="bg-slate-900 border-2 border-indigo-500/40 rounded-3xl p-6 md:p-10 space-y-8 shadow-2xl min-h-[420px] flex flex-col justify-between">
+                    
+                    <!-- Question Header & Answer Pill -->
+                    <div class="space-y-6">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-5">
+                            <div class="flex items-center gap-3">
+                                <span class="px-4 py-2 rounded-2xl bg-indigo-500/20 text-indigo-300 font-black text-xl border border-indigo-500/30">
+                                    Pregunta <span id="qDisplayNum">1</span>
+                                </span>
+                                <span class="text-slate-400 font-extrabold text-lg">Ítem I • Selección Múltiple</span>
+                            </div>
+                            
+                            <div class="flex items-center gap-3">
+                                <span class="text-sm font-bold text-slate-400">Alternativa Correcta:</span>
+                                <span id="qDisplayAnswer" class="text-xl md:text-2xl font-mono font-black text-emerald-300 bg-emerald-950 border-2 border-emerald-500/60 px-5 py-2 rounded-2xl shadow-lg">
+                                    Respuesta: D (90 cm³)
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Statement with Large Font for Classroom Projection -->
+                        <div class="space-y-3">
+                            <h4 class="text-xs font-black uppercase tracking-widest text-sky-400">Enunciado del Ejercicio:</h4>
+                            <p id="qDisplayText" class="text-2xl md:text-3xl text-white font-bold leading-relaxed">
+                                Una pirámide recta y un prisma recto tienen exactamente la misma base y la misma altura. Si el volumen de la pirámide es $V_{\text{pirámide}} = 30\text{ cm}^3$, ¿cuál es el volumen del prisma?
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Spaced Explanation & KaTeX Formula Area -->
+                    <div class="bg-slate-950 border-2 border-slate-800 rounded-2xl p-6 md:p-8 space-y-4">
+                        <div class="flex items-center gap-2 text-indigo-400 font-black text-lg">
+                            <i data-lucide="lightbulb" class="w-6 h-6 text-amber-400"></i>
+                            <span>Explicación y Justificación Matemática Paso a Paso:</span>
+                        </div>
+                        <div id="qDisplayExplanation" class="text-xl md:text-2xl text-slate-200 leading-relaxed font-medium space-y-3">
+                            <p>El prisma posee el triple del volumen que una pirámide de igual base y altura:</p>
+                            <p class="font-mono text-indigo-300 font-black text-2xl md:text-3xl bg-slate-900/80 p-4 rounded-xl border border-indigo-500/30 inline-block">
+                                $V_{\text{prisma}} = 3 \cdot V_{\text{pirámide}} = 3 \cdot 30 = 90\text{ cm}^3$
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Nav Controls inside Card -->
+                    <div class="flex items-center justify-between pt-4 border-t border-slate-800/80">
+                        <button onclick="prevSolItem1()" class="px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-extrabold text-base flex items-center gap-2 transition-all">
+                            <i data-lucide="arrow-left" class="w-5 h-5"></i> Pregunta Anterior
+                        </button>
+
+                        <span id="qCounterText" class="text-base font-extrabold text-slate-400">Ejercicio 1 de 5</span>
+
+                        <button onclick="nextSolItem1()" class="px-7 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-black text-base flex items-center gap-2 shadow-xl transition-all">
+                            Siguiente Pregunta <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- SOL_TAB: ITEM II (PROBLEMAS DE DESARROLLO - 1 PROBLEMA A LA VEZ) -->
+            <div id="sol-tab-item2" class="space-y-6 hidden">
+                <!-- Stepper Bar Item II -->
+                <div class="flex flex-wrap items-center justify-between gap-3 bg-slate-950 border border-slate-800 p-4 rounded-2xl">
+                    <div class="flex items-center gap-2">
+                        <span id="pStepperBadge" class="text-sm font-black uppercase tracking-wider text-indigo-300 bg-indigo-500/20 border border-indigo-500/30 px-3.5 py-1.5 rounded-xl">Problema 1 de 3</span>
+                    </div>
+
+                    <!-- Direct Quick Jump Buttons -->
+                    <div class="flex items-center gap-2">
+                        <button onclick="showSolItem2(0)" id="pStepBtn-0" class="px-4 py-2 rounded-xl font-black text-base transition-all bg-indigo-600 text-white shadow-md">Problema 1</button>
+                        <button onclick="showSolItem2(1)" id="pStepBtn-1" class="px-4 py-2 rounded-xl font-black text-base transition-all bg-slate-800 text-slate-300 hover:bg-slate-700">Problema 2</button>
+                        <button onclick="showSolItem2(2)" id="pStepBtn-2" class="px-4 py-2 rounded-xl font-black text-base transition-all bg-slate-800 text-slate-300 hover:bg-slate-700">Problema 3</button>
+                    </div>
+
+                    <!-- Prev / Next Controls -->
+                    <div class="flex items-center gap-2">
+                        <button onclick="prevSolItem2()" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm flex items-center gap-1.5 transition-all">
+                            <i data-lucide="chevron-left" class="w-5 h-5"></i> Anterior
+                        </button>
+                        <button onclick="nextSolItem2()" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-black text-sm flex items-center gap-1.5 shadow-lg transition-all">
+                            Siguiente <i data-lucide="chevron-right" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Single Problem Container -->
+                <div class="bg-slate-900 border-2 border-indigo-500/40 rounded-3xl p-6 md:p-8 space-y-8 shadow-2xl">
+                    
+                    <!-- Problem Title & Value Badge -->
+                    <div class="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-800 pb-5 gap-3">
+                        <div>
+                            <span id="pDisplayPoints" class="text-xs md:text-sm font-black text-amber-400 uppercase tracking-widest bg-amber-500/10 px-3 py-1 rounded-md border border-amber-500/20">Problema 1 (5 Puntos)</span>
+                            <h3 id="pDisplayTitle" class="text-2xl md:text-3xl font-black text-white mt-1">Depósito Rectangular de Agua (Prisma Recto)</h3>
+                        </div>
+                        <div id="pDisplayResultBadge" class="self-start md:self-auto">
+                            <span class="text-xl md:text-2xl font-black text-emerald-300 font-mono bg-emerald-950 border-2 border-emerald-500/60 px-5 py-2 rounded-2xl shadow-lg">
+                                V = 24 m³
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Problem Statement in Large Font -->
+                    <div class="bg-slate-950/80 border border-slate-800 p-5 md:p-6 rounded-2xl">
+                        <h4 class="text-xs font-black uppercase tracking-widest text-sky-400 mb-2">Enunciado del Problema:</h4>
+                        <p id="pDisplayText" class="text-xl md:text-2xl text-slate-100 font-semibold leading-relaxed">
+                            Un depósito rectangular de agua (prisma recto) mide 4 m de largo, 2 m de ancho y 3 m de alto. ¿Cuál es la capacidad máxima de almacenamiento en metros cúbicos ($m^3$) de este depósito?
+                        </p>
+                    </div>
+
+                    <!-- 2-Column Grid: Left High-Quality HD SVG Graphic Sketch | Right Step-by-Step Resolution -->
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+                        
+                        <!-- High Quality High Resolution Sketch Diagram (5 Cols) -->
+                        <div class="lg:col-span-5 bg-slate-950 border-2 border-slate-800 rounded-3xl p-6 flex flex-col items-center justify-between text-center relative overflow-hidden shadow-inner">
+                            <div class="w-full flex items-center justify-between border-b border-slate-800/80 pb-3 mb-3">
+                                <span class="text-sm font-black text-sky-400 uppercase tracking-wider flex items-center gap-1.5">
+                                    <i data-lucide="image" class="w-4 h-4"></i> Boceto Requerido en Guía
+                                </span>
+                                <span class="text-xs font-mono font-bold bg-sky-500/20 text-sky-300 px-2.5 py-1 rounded-full">Puntaje: 1 pto</span>
+                            </div>
+
+                            <!-- SVG Graphic Render Container -->
+                            <div id="pDisplaySvgContainer" class="w-full my-auto flex items-center justify-center p-2">
+                                <!-- Dynamic SVG inserted by JS -->
+                            </div>
+
+                            <div class="w-full pt-3 border-t border-slate-800/80 text-xs md:text-sm text-slate-400 font-semibold">
+                                Visualización espacial clara con datos y cotas proyectadas
+                            </div>
+                        </div>
+
+                        <!-- Spaced Step-by-Step Mathematical Development (7 Cols) -->
+                        <div class="lg:col-span-7 space-y-5 flex flex-col justify-between">
+                            
+                            <!-- Step 1: Datos y Fórmula -->
+                            <div class="bg-slate-950 border border-slate-800 p-5 rounded-2xl space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm font-black text-indigo-300 uppercase tracking-wider flex items-center gap-2">
+                                        <i data-lucide="calculator" class="w-4 h-4 text-indigo-400"></i> Paso 1: Datos & Selección de Fórmula
+                                    </span>
+                                    <span class="text-xs font-mono font-bold bg-indigo-500/20 text-indigo-200 px-2.5 py-0.5 rounded-full">1 pto</span>
+                                </div>
+                                <div id="pDisplayStep1" class="text-lg md:text-xl text-slate-200 font-medium space-y-1.5">
+                                    <p>• Largo = $4\text{ m}$, Ancho = $2\text{ m}$, Altura ($h$) = $3\text{ m}$</p>
+                                    <p>• Área basal del rectángulo: $A_b = \text{largo} \cdot \text{ancho}$</p>
+                                    <p class="pt-1">• Fórmula general del prisma: <strong class="text-sky-300 font-mono text-2xl">$V = A_b \cdot h$</strong></p>
+                                </div>
+                            </div>
+
+                            <!-- Step 2: Operatoria y Desarrollo -->
+                            <div class="bg-slate-950 border border-slate-800 p-5 rounded-2xl space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm font-black text-amber-300 uppercase tracking-wider flex items-center gap-2">
+                                        <i data-lucide="binary" class="w-4 h-4 text-amber-400"></i> Paso 2: Desarrollo Numérico a Mano
+                                    </span>
+                                    <span class="text-xs font-mono font-bold bg-amber-500/20 text-amber-200 px-2.5 py-0.5 rounded-full">2 ptos</span>
+                                </div>
+                                <div id="pDisplayStep2" class="text-xl md:text-2xl font-mono text-slate-100 space-y-2 bg-slate-900/90 p-4 rounded-xl border border-slate-800">
+                                    <p>1) $A_b = 4 \cdot 2 = 8\text{ m}^2$</p>
+                                    <p>2) $V = 8 \cdot 3 = 24\text{ m}^3$</p>
+                                </div>
+                            </div>
+
+                            <!-- Step 3: Respuesta Completa -->
+                            <div class="bg-slate-950 border-2 border-emerald-500/40 p-5 rounded-2xl space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm font-black text-emerald-300 uppercase tracking-wider flex items-center gap-2">
+                                        <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i> Paso 3: Respuesta con Unidades
+                                    </span>
+                                    <span class="text-xs font-mono font-bold bg-emerald-500/20 text-emerald-200 px-2.5 py-0.5 rounded-full">1 pto</span>
+                                </div>
+                                <p id="pDisplayStep3" class="text-lg md:text-2xl text-white font-bold leading-relaxed">
+                                    <strong class="text-emerald-400">Respuesta:</strong> La capacidad máxima de almacenamiento del depósito es de <strong class="text-amber-300 font-black underline underline-offset-4">24 m³</strong>.
+                                </p>
+                            </div>
+
+                            <!-- Optional Step 4 for Problem 3 Bonus -->
+                            <div id="pDisplayStep4Container" class="bg-slate-950 border border-indigo-500/30 p-5 rounded-2xl space-y-1 hidden">
+                                <span class="text-sm font-black text-indigo-300 uppercase tracking-wider flex items-center gap-2">
+                                    <i data-lucide="plus-circle" class="w-4 h-4 text-indigo-400"></i> Pregunta Adicional (1 pto)
+                                </span>
+                                <p id="pDisplayStep4" class="text-base md:text-xl text-slate-200 font-bold">
+                                    <!-- Dynamic text -->
+                                </p>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Bottom Nav Controls inside Card -->
+                    <div class="flex items-center justify-between pt-4 border-t border-slate-800">
+                        <button onclick="prevSolItem2()" class="px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-extrabold text-base flex items-center gap-2 transition-all">
+                            <i data-lucide="arrow-left" class="w-5 h-5"></i> Problema Anterior
+                        </button>
+
+                        <span id="pCounterText" class="text-base font-extrabold text-slate-400">Problema 1 de 3</span>
+
+                        <button onclick="nextSolItem2()" class="px-7 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-black text-base flex items-center gap-2 shadow-xl transition-all">
+                            Siguiente Problema <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+        </section>
+
+        <!-- PHASE 4 CONTENT PANEL -->
+        <section id="panel-phase-4" class="phase-panel space-y-6 hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+                <!-- Self Assessment Table -->
+                <div class="lg:col-span-2 bg-slate-900 border-2 border-slate-800 rounded-3xl p-6 md:p-8 space-y-5">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                        <div class="flex items-center gap-2.5">
+                            <i data-lucide="clipboard-check" class="w-7 h-7 text-emerald-400"></i>
+                            <h3 class="text-xl md:text-2xl font-black text-white">Autoevaluación de Desempeño (Ítem III)</h3>
+                        </div>
+                        <span class="text-sm font-bold text-slate-300">Marcar con X en la guía física</span>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm md:text-base border-collapse">
+                            <thead>
+                                <tr class="border-b-2 border-slate-800 text-slate-300">
+                                    <th class="p-3 font-black">Criterio de Desempeño</th>
+                                    <th class="p-3 text-center text-emerald-300 font-black">Logrado (L)</th>
+                                    <th class="p-3 text-center text-amber-300 font-black">En Proceso (EP)</th>
+                                    <th class="p-3 text-center text-rose-300 font-black">Por Lograr (PL)</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-800 text-slate-200 font-medium">
+                                <tr>
+                                    <td class="p-3">1. <strong>Bocetos y Esquemas:</strong> Dibujo con claridad e identifico dimensiones ($r, a, h$).</td>
+                                    <td class="p-3 text-center font-black text-xl text-emerald-400">✓</td>
+                                    <td class="p-3 text-center font-black text-xl text-amber-400">~</td>
+                                    <td class="p-3 text-center font-black text-xl text-rose-400">×</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3">2. <strong>Área Basal:</strong> Reconozco la figura de la base y calculo correctamente $A_b$.</td>
+                                    <td class="p-3 text-center font-black text-xl text-emerald-400">✓</td>
+                                    <td class="p-3 text-center font-black text-xl text-amber-400">~</td>
+                                    <td class="p-3 text-center font-black text-xl text-rose-400">×</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3">3. <strong>Selección de Fórmulas:</strong> Aplico la fórmula adecuada (diferenciando pirámide/cono).</td>
+                                    <td class="p-3 text-center font-black text-xl text-emerald-400">✓</td>
+                                    <td class="p-3 text-center font-black text-xl text-amber-400">~</td>
+                                    <td class="p-3 text-center font-black text-xl text-rose-400">×</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3">4. <strong>Relación de Volúmenes:</strong> Aplico que la pirámide/cono equivale a $1/3$ del prisma/cilindro.</td>
+                                    <td class="p-3 text-center font-black text-xl text-emerald-400">✓</td>
+                                    <td class="p-3 text-center font-black text-xl text-amber-400">~</td>
+                                    <td class="p-3 text-center font-black text-xl text-rose-400">×</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3">5. <strong>Operatoria Manual:</strong> Realizo multiplicaciones y divisiones a mano de forma limpia.</td>
+                                    <td class="p-3 text-center font-black text-xl text-emerald-400">✓</td>
+                                    <td class="p-3 text-center font-black text-xl text-amber-400">~</td>
+                                    <td class="p-3 text-center font-black text-xl text-rose-400">×</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Metacognitive Reflection & Commitment -->
+                <div class="bg-slate-900 border-2 border-slate-800 rounded-3xl p-6 md:p-8 space-y-5">
+                    <div class="flex items-center gap-2.5 border-b border-slate-800 pb-3">
+                        <i data-lucide="message-square-heart" class="w-7 h-7 text-indigo-400"></i>
+                        <h3 class="text-xl md:text-2xl font-black text-white">Reflexión de Cierre</h3>
+                    </div>
+
+                    <div class="space-y-4 text-sm md:text-base">
+                        <div class="p-4 bg-slate-950 border border-slate-800 rounded-2xl space-y-1">
+                            <strong class="text-sky-300 block text-base font-black">1. Estrategia y Dificultades:</strong>
+                            <p class="text-slate-300 font-medium">¿Qué paso fue más sencillo y en cuál sentiste mayor dificultad? ¿Por qué?</p>
+                        </div>
+
+                        <div class="p-4 bg-slate-950 border border-slate-800 rounded-2xl space-y-1">
+                            <strong class="text-sky-300 block text-base font-black">2. Utilidad del Boceto:</strong>
+                            <p class="text-slate-300 font-medium">¿De qué manera te ayudó hacer la figura antes de reemplazar valores?</p>
+                        </div>
+
+                        <div class="p-4 bg-slate-950 border border-slate-800 rounded-2xl space-y-1">
+                            <strong class="text-sky-300 block text-base font-black">3. Corrección de Errores:</strong>
+                            <p class="text-slate-300 font-medium">¿Qué error o duda detectaste que vas a corregir para la prueba sumativa del miércoles?</p>
+                        </div>
+
+                        <div class="p-4 bg-gradient-to-br from-emerald-950/80 to-slate-950 border-2 border-emerald-500/40 rounded-2xl space-y-1">
+                            <strong class="text-emerald-300 block text-base font-black flex items-center gap-2">
+                                <i data-lucide="target" class="w-5 h-5"></i> Compromiso de Estudio:
+                            </strong>
+                            <p class="text-slate-100 font-bold italic text-base">"Revisaré la guía en Classroom y ejercitaré mis multiplicaciones a mano."</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer Bar -->
+    <footer class="mt-auto bg-slate-950 border-t border-slate-800 py-4 px-6 text-center text-sm text-slate-400 font-semibold">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
+            <span>Colegio Pucará • Departamento de Matemática 2026</span>
+            <span>Unidad: Volumen de Cuerpos Geométricos • 1° Medio</span>
+        </div>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        function triggerKaTeX() {
+            if (typeof renderMathInElement === 'function') {
+                renderMathInElement(document.body, {
+                    delimiters: [
+                        {left: '$$', right: '$$', display: true},
+                        {left: '$', right: '$', display: false}
+                    ],
+                    throwOnError: false
+                });
+            }
+        }
+
+        // State Object
+        const state = {
+            currentPhase: 1,
+            timeRemaining: 4 * 60, // phase 1 default 4 mins
+            timerRunning: false,
+            timerInterval: null,
+            soundEnabled: true,
+            rotativeTipIndex: 0,
+            rotativeTipInterval: null,
+            solItem1Index: 0,
+            solItem2Index: 0,
+            phaseDurations: {
+                1: 4 * 60,   // 4 mins
+                2: 45 * 60,  // 45 mins
+                3: 25 * 60,  // 25 mins
+                4: 6 * 60    // 6 mins
+            },
+            phaseTitles: {
+                1: 'Activación Metacognitiva Previa',
+                2: 'Evaluación Formativa Individual',
+                3: 'Retroalimentación Guiada en Pizarra',
+                4: 'Autoevaluación y Reflexión Metacognitiva'
+            },
+            phaseDescs: {
+                1: 'Los estudiantes completan la hoja de 4 minutos antes de abrir la evaluación.',
+                2: 'Trabajo individual con cuaderno/hoja de prueba. Sin calculadora (45 minutos).',
+                3: 'Revisión interactiva y paso a paso en la pizarra de cada ítem de la prueba (25 minutos).',
+                4: 'Completar pauta de autoevaluación, análisis de errores y compromiso de estudio.'
+            },
+            tips: [
+                "💡 En el Ítem II el boceto o dibujo del cuerpo geométrico es OBLIGATORIO y lleva puntaje.",
+                "⚠️ Recuerda: Si es Pirámide o Cono, DEBES multiplicar por 1/3 (o dividir entre 3).",
+                "✏️ Usa lápiz grafito para los esquemas/desarrollos y lápiz pasta para la respuesta final.",
+                "📌 Considera el valor aproximado de Pi como 3,14 y revisa la coma decimal."
+            ],
+            // ITEM I EXERCISES DATASET FOR STEPPER
+            item1Data: [
+                {
+                    num: 1,
+                    ans: "D (90 cm³)",
+                    text: "Una pirámide recta y un prisma recto tienen exactamente la misma base y la misma altura. Si el volumen de la pirámide es $V_{\\text{pirámide}} = 30\\text{ cm}^3$, ¿cuál es el volumen del prisma?",
+                    explanation: "<p class='mb-2'>Un prisma recto equivale a exactamente <strong>3 veces</strong> el volumen de una pirámide que comparte la misma base y altura ($V_{\\text{prisma}} = 3 \\cdot V_{\\text{pirámide}}$).</p><p class='font-mono text-indigo-300 font-black text-2xl md:text-3xl bg-slate-900 p-4 rounded-xl border border-indigo-500/30 inline-block'>$V_{\\text{prisma}} = 30 \\cdot 3 = 90\\text{ cm}^3$</p>"
+                },
+                {
+                    num: 2,
+                    ans: "B (V = 1/3 · A_b · h)",
+                    text: "La fórmula general para calcular el volumen de una pirámide o de un cono a partir de su área basal ($A_b$) y su altura ($h$) es:",
+                    explanation: "<p class='mb-2'>Todo cuerpo geométrico que culmina en una cúspide o vértice (pirámides y conos) ocupa un tercio del volumen de un cuerpo prismático o cilíndrico de base equivalente.</p><p class='font-mono text-indigo-300 font-black text-2xl md:text-3xl bg-slate-900 p-4 rounded-xl border border-indigo-500/30 inline-block'>$V = \\frac{1}{3} \\cdot A_b \\cdot h$</p>"
+                },
+                {
+                    num: 3,
+                    ans: "A (150π cm³)",
+                    text: "Un cilindro recto tiene un área basal $A_b = 25\\pi\\text{ cm}^2$ y una altura de $h = 6\\text{ cm}$. ¿Cuál es su volumen expresado en términos de $\\pi$?",
+                    explanation: "<p class='mb-2'>Para calcular el volumen del cilindro multiplicamos directamente el área basal ($A_b$) por su altura ($h$):</p><p class='font-mono text-indigo-300 font-black text-2xl md:text-3xl bg-slate-900 p-4 rounded-xl border border-indigo-500/30 inline-block'>$V = A_b \\cdot h = (25\\pi) \\cdot 6 = 150\\pi\\text{ cm}^3$</p>"
+                },
+                {
+                    num: 4,
+                    ans: "C (3 veces)",
+                    text: "Se tiene un recipiente cilíndrico lleno de agua. Si vaciamos su contenido utilizando un recipiente con forma de cono de igual radio y altura, ¿cuántas veces debemos llenar el cono para vaciar completamente el cilindro?",
+                    explanation: "<p class='mb-2'>Puesto que el volumen del cono es $V_{\\text{cono}} = \\frac{1}{3} V_{\\text{cilindro}}$, la capacidad del cono cabe exactamente <strong>3 veces</strong> dentro del cilindro.</p><p class='font-mono text-indigo-300 font-black text-2xl md:text-3xl bg-slate-900 p-4 rounded-xl border border-indigo-500/30 inline-block'>$\\text{Trasvasijados} = \\frac{V_{\\text{cilindro}}}{V_{\\text{cono}}} = 3\\text{ veces}$</p>"
+                },
+                {
+                    num: 5,
+                    ans: "B (Se duplica)",
+                    text: "Si duplicamos únicamente la altura ($h$) de un cilindro manteniendo constante su radio ($r$), su volumen:",
+                    explanation: "<p class='mb-2'>El volumen de un cilindro es directamente proporcional a su altura $h$:</p><p class='font-mono text-indigo-300 font-black text-xl md:text-2xl bg-slate-900 p-4 rounded-xl border border-indigo-500/30 inline-block'>$V_{\\text{nuevo}} = \\pi r^2 \\cdot (2h) = 2 \\cdot (\\pi r^2 h) = 2V_{\\text{original}}$</p><p class='mt-2'>Por lo tanto, al duplicar la altura, el volumen total se <strong>duplica</strong>.</p>"
+                }
+            ],
+            // ITEM II PROBLEMS DATASET FOR STEPPER (WITH HIGH QUALITY SVG SKETCHES)
+            item2Data: [
+                {
+                    num: 1,
+                    title: "Depósito Rectangular de Agua (Prisma Recto)",
+                    pts: "Problema 1 (5 Puntos)",
+                    res: "V = 24 m³",
+                    text: "Un depósito rectangular de agua (prisma recto) mide $4\\text{ m}$ de largo, $2\\text{ m}$ de ancho y $3\\text{ m}$ de alto. ¿Cuál es la capacidad máxima de almacenamiento en metros cúbicos ($\\text{m}^3$) de este depósito?",
+                    step1: "<p>• Largo = $4\\text{ m}$, Ancho = $2\\text{ m}$, Altura ($h$) = $3\\text{ m}$</p><p>• Área basal del rectángulo: $A_b = \\text{largo} \\cdot \\text{ancho}$</p><p class='pt-1'>• Fórmula: <strong class='text-sky-300 font-mono text-2xl'>$V = A_b \\cdot h$</strong></p>",
+                    step2: "<p>1) $A_b = 4 \\cdot 2 = 8\\text{ m}^2$</p><p>2) $V = 8 \\cdot 3 = 24\\text{ m}^3$</p>",
+                    step3: "<strong class='text-emerald-400'>Respuesta:</strong> La capacidad máxima de almacenamiento del depósito es de <strong class='text-amber-300 font-black text-2xl underline underline-offset-4'>24 m³</strong>.",
+                    step4: null,
+                    svg: `<svg class="w-full max-w-[280px] h-auto drop-shadow-xl" viewBox="0 0 240 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="prismGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#0284c7" stop-opacity="0.5"/>
+                                <stop offset="100%" stop-color="#0369a1" stop-opacity="0.8"/>
+                            </linearGradient>
+                            <linearGradient id="topFace" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.7"/>
+                                <stop offset="100%" stop-color="#0284c7" stop-opacity="0.8"/>
+                            </linearGradient>
+                        </defs>
+                        <!-- Back Hidden Edges -->
+                        <path d="M 40 70 L 140 70 L 140 150 L 40 150 Z" stroke="#0284c7" stroke-width="2" stroke-dasharray="4 4"/>
+                        <!-- Bottom Base Highlight -->
+                        <polygon points="40,150 140,150 190,110 90,110" fill="#38bdf8" fill-opacity="0.15" stroke="#38bdf8" stroke-width="2"/>
+                        <!-- Main 3D Box Faces -->
+                        <polygon points="40,70 140,70 190,30 90,30" fill="url(#topFace)" stroke="#f0f9ff" stroke-width="2.5"/>
+                        <polygon points="40,70 90,30 90,110 40,150" fill="url(#prismGradient)" stroke="#f0f9ff" stroke-width="2.5"/>
+                        <polygon points="90,30 190,30 190,110 90,110" fill="#0369a1" fill-opacity="0.85" stroke="#f0f9ff" stroke-width="2.5"/>
+                        
+                        <!-- Dimension Annotations & Arrows -->
+                        <!-- Largo = 4m -->
+                        <line x1="40" y1="165" x2="140" y2="165" stroke="#38bdf8" stroke-width="2.5"/>
+                        <path d="M 40 160 L 32 165 L 40 170 M 140 160 L 148 165 L 140 170" stroke="#38bdf8" stroke-width="2.5" fill="none"/>
+                        <rect x="65" y="152" width="50" height="22" rx="6" fill="#0c4a6e" stroke="#38bdf8"/>
+                        <text x="90" y="167" fill="#f0f9ff" font-size="12" font-weight="900" text-anchor="middle">4 m (largo)</text>
+
+                        <!-- Ancho = 2m -->
+                        <line x1="148" y1="158" x2="195" y2="120" stroke="#f59e0b" stroke-width="2.5"/>
+                        <rect x="165" y="132" width="50" height="22" rx="6" fill="#451a03" stroke="#f59e0b"/>
+                        <text x="190" y="147" fill="#fef3c7" font-size="12" font-weight="900" text-anchor="middle">2 m (ancho)</text>
+
+                        <!-- Altura = 3m -->
+                        <line x1="22" y1="70" x2="22" y2="150" stroke="#10b981" stroke-width="2.5"/>
+                        <path d="M 17 70 L 22 62 L 27 70 M 17 150 L 22 158 L 27 150" stroke="#10b981" stroke-width="2.5" fill="none"/>
+                        <rect x="0" y="100" width="45" height="22" rx="6" fill="#064e3b" stroke="#10b981"/>
+                        <text x="22" y="115" fill="#a7f3d0" font-size="12" font-weight="900" text-anchor="middle">h = 3 m</text>
+                    </svg>`
+                },
+                {
+                    num: 2,
+                    title: "Lata Cilíndrica de Granos",
+                    pts: "Problema 2 (5 Puntos)",
+                    res: "V = 628 cm³",
+                    text: "Una empresa envasa granos en latas cilíndricas que tienen un radio basal de $r = 5\\text{ cm}$ y una altura de $h = 8\\text{ cm}$. Calcule el volumen total de la lata. (Considere $\\pi \\approx 3{,}14$).",
+                    step1: "<p>• Radio basal $r = 5\\text{ cm}$, Altura $h = 8\\text{ cm}$, $\\pi \\approx 3{,}14$</p><p>• Área basal del círculo: $A_b = \\pi \\cdot r^2$</p><p class='pt-1'>• Fórmula general del cilindro: <strong class='text-sky-300 font-mono text-2xl'>$V = \\pi \\cdot r^2 \\cdot h$</strong></p>",
+                    step2: "<p>1) $A_b = 3{,}14 \\cdot 5^2 = 3{,}14 \\cdot 25 = 78{,}5\\text{ cm}^2$</p><p>2) $V = 78{,}5 \\cdot 8 = 628\\text{ cm}^3$</p>",
+                    step3: "<strong class='text-emerald-400'>Respuesta:</strong> El volumen total de la lata cilíndrica es de <strong class='text-amber-300 font-black text-2xl underline underline-offset-4'>628 cm³</strong>.",
+                    step4: null,
+                    svg: `<svg class="w-full max-w-[260px] h-auto drop-shadow-xl" viewBox="0 0 240 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="cylinderBody" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stop-color="#0284c7"/>
+                                <stop offset="50%" stop-color="#38bdf8"/>
+                                <stop offset="100%" stop-color="#0369a1"/>
+                            </linearGradient>
+                            <linearGradient id="topEllipse" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stop-color="#e0f2fe"/>
+                                <stop offset="100%" stop-color="#bae6fd"/>
+                            </linearGradient>
+                        </defs>
+                        <!-- Bottom Base Shaded -->
+                        <ellipse cx="120" cy="150" rx="65" ry="25" fill="#38bdf8" fill-opacity="0.2" stroke="#0284c7" stroke-width="2.5" stroke-dasharray="4 4"/>
+                        <!-- Body Rect Fill -->
+                        <path d="M 55 45 L 55 150 A 65 25 0 0 0 185 150 L 185 45 Z" fill="url(#cylinderBody)" fill-opacity="0.85" stroke="#f0f9ff" stroke-width="2.5"/>
+                        <!-- Top Base Cap -->
+                        <ellipse cx="120" cy="45" rx="65" ry="25" fill="url(#topEllipse)" stroke="#f0f9ff" stroke-width="2.5"/>
+                        
+                        <!-- Radius Arrow on Top Base -->
+                        <line x1="120" y1="45" x2="185" y2="45" stroke="#f59e0b" stroke-width="3"/>
+                        <circle cx="120" cy="45" r="4" fill="#f59e0b"/>
+                        <path d="M 177 41 L 185 45 L 177 49" stroke="#f59e0b" stroke-width="3" fill="none"/>
+                        <rect x="125" y="18" width="65" height="22" rx="6" fill="#451a03" stroke="#f59e0b"/>
+                        <text x="157" y="33" fill="#fef3c7" font-size="12" font-weight="900" text-anchor="middle">r = 5 cm</text>
+
+                        <!-- Height Arrow -->
+                        <line x1="30" y1="45" x2="30" y2="150" stroke="#10b981" stroke-width="2.5"/>
+                        <path d="M 25 45 L 30 37 L 35 45 M 25 150 L 30 158 L 35 150" stroke="#10b981" stroke-width="2.5" fill="none"/>
+                        <rect x="5" y="88" width="52" height="22" rx="6" fill="#064e3b" stroke="#10b981"/>
+                        <text x="31" y="103" fill="#a7f3d0" font-size="12" font-weight="900" text-anchor="middle">h = 8 cm</text>
+                    </svg>`
+                },
+                {
+                    num: 3,
+                    title: "Techo Piramidal de Base Cuadrada + Prisma",
+                    pts: "Problema 3 (6 Puntos)",
+                    res: "V = 48 m³ (Pirámide)",
+                    text: "Un arquitecto diseña el techo de una estructura en forma de pirámide de base cuadrada. El lado de la base cuadrada mide $6\\text{ m}$ y la altura de la pirámide es de $4\\text{ m}$. Calcule el volumen de aire que encierra esta pirámide.",
+                    step1: "<p>• Lado de la base cuadrada = $6\\text{ m}$, Altura de pirámide ($h$) = $4\\text{ m}$</p><p>• Área basal del cuadrado: $A_b = \text{lado}^2 = 6 \\cdot 6 = 36\\text{ m}^2$</p><p class='pt-1'>• Fórmula pirámide: <strong class='text-sky-300 font-mono text-2xl'>$V = \\frac{1}{3} \\cdot A_b \\cdot h$</strong></p>",
+                    step2: "<p>1) $A_b = 6 \\cdot 6 = 36\\text{ m}^2$</p><p>2) $V_{\\text{pirámide}} = \\frac{1}{3} \\cdot 36 \\cdot 4 = 12 \\cdot 4 = 48\\text{ m}^3$</p>",
+                    step3: "<strong class='text-emerald-400'>Respuesta Pirámide:</strong> El volumen de aire encerrado en el techo piramidal es de <strong class='text-amber-300 font-black text-2xl underline underline-offset-4'>48 m³</strong>.",
+                    step4: "Pregunta adicional: Si fuese un prisma de igual base ($6\\text{ m}$) y altura ($4\\text{ m}$), su volumen sería $V_{\\text{prisma}} = 36 \\cdot 4 = \\mathbf{144\\text{ m}^3}$ (3 veces mayor).",
+                    svg: `<svg class="w-full max-w-[280px] h-auto drop-shadow-xl" viewBox="0 0 240 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="pyrFace1" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.6"/>
+                                <stop offset="100%" stop-color="#6d28d9" stop-opacity="0.9"/>
+                            </linearGradient>
+                            <linearGradient id="pyrFace2" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#a78bfa" stop-opacity="0.7"/>
+                                <stop offset="100%" stop-color="#7c3aed" stop-opacity="0.9"/>
+                            </linearGradient>
+                        </defs>
+                        <!-- Square Base Shaded -->
+                        <polygon points="40,150 140,150 190,110 90,110" fill="#a78bfa" fill-opacity="0.2" stroke="#8b5cf6" stroke-width="2"/>
+                        <!-- Hidden Back Lines -->
+                        <line x1="90" y1="110" x2="120" y2="25" stroke="#a78bfa" stroke-width="2" stroke-dasharray="4 4"/>
+                        <!-- Altitude Drop Arrow (Height h = 4m) -->
+                        <line x1="120" y1="25" x2="115" y2="130" stroke="#ef4444" stroke-width="3" stroke-dasharray="3 3"/>
+                        <circle cx="115" cy="130" r="4" fill="#ef4444"/>
+                        <rect x="122" y="70" x="122" y="70" width="58" height="22" rx="6" fill="#450a0a" stroke="#ef4444"/>
+                        <text x="151" y="85" fill="#fca5a5" font-size="12" font-weight="900" text-anchor="middle">h = 4 m</text>
+
+                        <!-- Outer Triangular Faces -->
+                        <polygon points="40,150 140,150 120,25" fill="url(#pyrFace1)" stroke="#f0f9ff" stroke-width="2.5"/>
+                        <polygon points="140,150 190,110 120,25" fill="url(#pyrFace2)" stroke="#f0f9ff" stroke-width="2.5"/>
+
+                        <!-- Base Dimensions Annotations -->
+                        <line x1="40" y1="165" x2="140" y2="165" stroke="#38bdf8" stroke-width="2.5"/>
+                        <path d="M 40 160 L 32 165 L 40 170 M 140 160 L 148 165 L 140 170" stroke="#38bdf8" stroke-width="2.5" fill="none"/>
+                        <rect x="62" y="152" width="56" height="22" rx="6" fill="#0c4a6e" stroke="#38bdf8"/>
+                        <text x="90" y="167" fill="#f0f9ff" font-size="12" font-weight="900" text-anchor="middle">Lado = 6 m</text>
+                    </svg>`
+                }
+            ]
+        };
+
+        function switchSolTab(tabType) {
+            const item1 = document.getElementById('sol-tab-item1');
+            const item2 = document.getElementById('sol-tab-item2');
+            const btn1 = document.getElementById('btn-sol-item1');
+            const btn2 = document.getElementById('btn-sol-item2');
+
+            if (tabType === 'item1') {
+                item1.classList.remove('hidden');
+                item2.classList.add('hidden');
+                btn1.className = 'px-6 py-3.5 rounded-2xl font-black text-base md:text-lg bg-indigo-600 text-white shadow-lg transition-all flex items-center gap-2';
+                btn2.className = 'px-6 py-3.5 rounded-2xl font-black text-base md:text-lg bg-slate-800 text-slate-300 hover:text-white transition-all flex items-center gap-2';
+                showSolItem1(state.solItem1Index);
+            } else {
+                item1.classList.add('hidden');
+                item2.classList.remove('hidden');
+                btn2.className = 'px-6 py-3.5 rounded-2xl font-black text-base md:text-lg bg-indigo-600 text-white shadow-lg transition-all flex items-center gap-2';
+                btn1.className = 'px-6 py-3.5 rounded-2xl font-black text-base md:text-lg bg-slate-800 text-slate-300 hover:text-white transition-all flex items-center gap-2';
+                showSolItem2(state.solItem2Index);
+            }
+            setTimeout(triggerKaTeX, 50);
+        }
+
+        // Stepper functionality for Item I
+        function showSolItem1(index) {
+            if (index < 0) index = 0;
+            if (index >= state.item1Data.length) index = state.item1Data.length - 1;
+            state.solItem1Index = index;
+
+            const data = state.item1Data[index];
+
+            document.getElementById('qDisplayNum').textContent = data.num;
+            document.getElementById('qDisplayAnswer').textContent = `Respuesta: ${data.ans}`;
+            document.getElementById('qDisplayText').innerHTML = data.text;
+            document.getElementById('qDisplayExplanation').innerHTML = data.explanation;
+            document.getElementById('qStepperBadge').textContent = `Pregunta ${data.num} de 5`;
+            document.getElementById('qCounterText').textContent = `Ejercicio ${data.num} de 5`;
+
+            // Update step buttons highlight
+            for (let i = 0; i < 5; i++) {
+                const btn = document.getElementById(`qStepBtn-${i}`);
+                if (btn) {
+                    if (i === index) {
+                        btn.className = 'w-10 h-10 rounded-xl font-black text-base transition-all bg-indigo-600 text-white shadow-md scale-110 border-2 border-indigo-400';
+                    } else {
+                        btn.className = 'w-10 h-10 rounded-xl font-black text-base transition-all bg-slate-800 text-slate-300 hover:bg-slate-700';
+                    }
+                }
+            }
+
+            setTimeout(triggerKaTeX, 50);
+            lucide.createIcons();
+        }
+
+        function nextSolItem1() {
+            if (state.solItem1Index < state.item1Data.length - 1) {
+                showSolItem1(state.solItem1Index + 1);
+            } else {
+                // Switch to Item II when reaching end of Item I
+                switchSolTab('item2');
+            }
+        }
+
+        function prevSolItem1() {
+            if (state.solItem1Index > 0) {
+                showSolItem1(state.solItem1Index - 1);
+            }
+        }
+
+        // Stepper functionality for Item II
+        function showSolItem2(index) {
+            if (index < 0) index = 0;
+            if (index >= state.item2Data.length) index = state.item2Data.length - 1;
+            state.solItem2Index = index;
+
+            const data = state.item2Data[index];
+
+            document.getElementById('pDisplayTitle').textContent = data.title;
+            document.getElementById('pDisplayPoints').textContent = data.pts;
+            document.getElementById('pDisplayResultBadge').innerHTML = `
+                <span class="text-xl md:text-2xl font-black text-emerald-300 font-mono bg-emerald-950 border-2 border-emerald-500/60 px-5 py-2 rounded-2xl shadow-lg">
+                    ${data.res}
+                </span>
+            `;
+            document.getElementById('pDisplayText').innerHTML = data.text;
+            document.getElementById('pDisplayStep1').innerHTML = data.step1;
+            document.getElementById('pDisplayStep2').innerHTML = data.step2;
+            document.getElementById('pDisplayStep3').innerHTML = data.step3;
+            document.getElementById('pDisplaySvgContainer').innerHTML = data.svg;
+            document.getElementById('pStepperBadge').textContent = `Problema ${data.num} de 3`;
+            document.getElementById('pCounterText').textContent = `Problema ${data.num} de 3`;
+
+            // Step 4 Bonus Container check
+            const step4Container = document.getElementById('pDisplayStep4Container');
+            if (data.step4) {
+                step4Container.classList.remove('hidden');
+                document.getElementById('pDisplayStep4').innerHTML = data.step4;
+            } else {
+                step4Container.classList.add('hidden');
+            }
+
+            // Update step buttons highlight
+            for (let i = 0; i < 3; i++) {
+                const btn = document.getElementById(`pStepBtn-${i}`);
+                if (btn) {
+                    if (i === index) {
+                        btn.className = 'px-4 py-2 rounded-xl font-black text-base transition-all bg-indigo-600 text-white shadow-md border-2 border-indigo-400 scale-105';
+                    } else {
+                        btn.className = 'px-4 py-2 rounded-xl font-black text-base transition-all bg-slate-800 text-slate-300 hover:bg-slate-700';
+                    }
+                }
+            }
+
+            setTimeout(triggerKaTeX, 50);
+            lucide.createIcons();
+        }
+
+        function nextSolItem2() {
+            if (state.solItem2Index < state.item2Data.length - 1) {
+                showSolItem2(state.solItem2Index + 1);
+            }
+        }
+
+        function prevSolItem2() {
+            if (state.solItem2Index > 0) {
+                showSolItem2(state.solItem2Index - 1);
+            }
+        }
+
+        // Web Audio Synthesizer Chimes
+        function playChime(type) {
+            if (!state.soundEnabled) return;
+            try {
+                const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                if (!AudioCtx) return;
+                const ctx = new AudioCtx();
+                
+                if (type === 'start') {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(523.25, ctx.currentTime); // C5
+                    osc.frequency.exponentialRampToValueAtTime(659.25, ctx.currentTime + 0.3); // E5
+                    gain.gain.setValueAtTime(0.15, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.5);
+                } else if (type === 'timeup') {
+                    const freqs = [523.25, 659.25, 783.99, 1046.50];
+                    freqs.forEach((f, idx) => {
+                        const osc = ctx.createOscillator();
+                        const gain = ctx.createGain();
+                        osc.type = 'triangle';
+                        osc.frequency.setValueAtTime(f, ctx.currentTime + (idx * 0.15));
+                        gain.gain.setValueAtTime(0.2, ctx.currentTime + (idx * 0.15));
+                        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + (idx * 0.15) + 0.6);
+                        osc.connect(gain);
+                        gain.connect(ctx.destination);
+                        osc.start(ctx.currentTime + (idx * 0.15));
+                        osc.stop(ctx.currentTime + (idx * 0.15) + 0.6);
+                    });
+                }
+            } catch (e) {
+                console.debug('WebAudio not supported or permitted without user gesture.', e);
+            }
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(state.timeRemaining / 60);
+            const seconds = state.timeRemaining % 60;
+            const formatted = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            
+            const displayEl = document.getElementById('timerDisplay');
+            if (displayEl) {
+                displayEl.textContent = formatted;
+            }
+
+            // Visual bar inside active tab
+            const totalDuration = state.phaseDurations[state.currentPhase];
+            const progressPct = Math.max(0, Math.min(100, ((totalDuration - state.timeRemaining) / totalDuration) * 100));
+            const activeBar = document.getElementById(`bar-phase-${state.currentPhase}`);
+            if (activeBar) {
+                activeBar.style.width = `${progressPct}%`;
+            }
+        }
+
+        function toggleTimer() {
+            if (state.timerRunning) {
+                pauseTimer();
+            } else {
+                startTimer();
+            }
+        }
+
+        function startTimer() {
+            if (state.timerRunning) return;
+            state.timerRunning = true;
+            playChime('start');
+
+            document.getElementById('playBtnText').textContent = 'Pausar';
+            document.getElementById('playIcon').setAttribute('data-lucide', 'pause');
+            document.getElementById('timerStatus').innerHTML = `
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> En ejecución
+            `;
+            lucide.createIcons();
+
+            state.timerInterval = setInterval(() => {
+                if (state.timeRemaining > 0) {
+                    state.timeRemaining--;
+                    updateTimerDisplay();
+                } else {
+                    pauseTimer();
+                    playChime('timeup');
+                    document.getElementById('timerStatus').innerHTML = `
+                        <span class="w-2 h-2 rounded-full bg-rose-500"></span> Tiempo finalizado
+                    `;
+                }
+            }, 1000);
+        }
+
+        function pauseTimer() {
+            state.timerRunning = false;
+            clearInterval(state.timerInterval);
+            document.getElementById('playBtnText').textContent = 'Continuar';
+            document.getElementById('playIcon').setAttribute('data-lucide', 'play');
+            document.getElementById('timerStatus').innerHTML = `
+                <span class="w-2 h-2 rounded-full bg-amber-400"></span> Pausado
+            `;
+            lucide.createIcons();
+        }
+
+        function resetTimer() {
+            pauseTimer();
+            state.timeRemaining = state.phaseDurations[state.currentPhase];
+            updateTimerDisplay();
+            document.getElementById('timerStatus').innerHTML = `
+                <span class="w-2 h-2 rounded-full bg-slate-400"></span> Reiniciado
+            `;
+        }
+
+        function addTime(minutes) {
+            state.timeRemaining += minutes * 60;
+            updateTimerDisplay();
+        }
+
+        function switchPhase(phaseNum) {
+            pauseTimer();
+            state.currentPhase = phaseNum;
+            state.timeRemaining = state.phaseDurations[phaseNum];
+
+            // Update UI Tabs
+            for (let i = 1; i <= 4; i++) {
+                const tab = document.getElementById(`tab-phase-${i}`);
+                const panel = document.getElementById(`panel-phase-${i}`);
+                const bar = document.getElementById(`bar-phase-${i}`);
+
+                if (i === phaseNum) {
+                    tab.classList.remove('bg-slate-900/60', 'opacity-80', 'border-slate-800');
+                    tab.classList.add('bg-slate-800/90', 'opacity-100', 'border-sky-500/40', 'shadow-lg');
+                    if (panel) panel.classList.remove('hidden');
+                    if (bar) bar.style.width = '0%';
+                } else {
+                    tab.classList.remove('bg-slate-800/90', 'border-sky-500/40', 'shadow-lg');
+                    tab.classList.add('bg-slate-900/60', 'opacity-80', 'border-slate-800');
+                    if (panel) panel.classList.add('hidden');
+                    if (bar) bar.style.width = '0%';
+                }
+            }
+
+            // Update Main Timer Header
+            document.getElementById('phaseBadge').textContent = `Fase ${phaseNum} de 4`;
+            document.getElementById('phaseTitle').textContent = state.phaseTitles[phaseNum];
+            document.getElementById('phaseDesc').textContent = state.phaseDescs[phaseNum];
+
+            updateTimerDisplay();
+            document.getElementById('timerStatus').innerHTML = `
+                <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span> Listo para iniciar
+            `;
+
+            // Start rotative tips if in phase 2
+            if (phaseNum === 2) {
+                startRotativeTips();
+            } else {
+                clearInterval(state.rotativeTipInterval);
+            }
+
+            // Initialize Phase 3 Stepper view
+            if (phaseNum === 3) {
+                showSolItem1(0);
+                showSolItem2(0);
+            }
+
+            lucide.createIcons();
+            setTimeout(triggerKaTeX, 50);
+        }
+
+        function nextPhase() {
+            if (state.currentPhase < 4) {
+                switchPhase(state.currentPhase + 1);
+            } else {
+                switchPhase(1);
+            }
+        }
+
+        function startRotativeTips() {
+            clearInterval(state.rotativeTipInterval);
+            state.rotativeTipIndex = 0;
+            updateTipDisplay();
+
+            state.rotativeTipInterval = setInterval(() => {
+                state.rotativeTipIndex = (state.rotativeTipIndex + 1) % state.tips.length;
+                updateTipDisplay();
+            }, 12000); // rotates every 12 seconds
+        }
+
+        function updateTipDisplay() {
+            const tipEl = document.getElementById('rotativeTip');
+            const idxEl = document.getElementById('tipIndex');
+            if (tipEl) {
+                tipEl.textContent = state.tips[state.rotativeTipIndex];
+            }
+            if (idxEl) {
+                idxEl.textContent = state.rotativeTipIndex + 1;
+            }
+        }
+
+        function switchSolTab(tabType) {
+            const item1 = document.getElementById('sol-tab-item1');
+            const item2 = document.getElementById('sol-tab-item2');
+            const btn1 = document.getElementById('btn-sol-item1');
+            const btn2 = document.getElementById('btn-sol-item2');
+
+            if (tabType === 'item1') {
+                item1.classList.remove('hidden');
+                item2.classList.add('hidden');
+                btn1.className = 'px-4 py-2 rounded-xl font-bold text-xs bg-indigo-600 text-white shadow-md transition-all';
+                btn2.className = 'px-4 py-2 rounded-xl font-bold text-xs bg-slate-800 text-slate-400 hover:text-white transition-all';
+            } else {
+                item1.classList.add('hidden');
+                item2.classList.remove('hidden');
+                btn2.className = 'px-4 py-2 rounded-xl font-bold text-xs bg-indigo-600 text-white shadow-md transition-all';
+                btn1.className = 'px-4 py-2 rounded-xl font-bold text-xs bg-slate-800 text-slate-400 hover:text-white transition-all';
+            }
+            setTimeout(triggerKaTeX, 50);
+        }
+
+        function toggleSound() {
+            state.soundEnabled = !state.soundEnabled;
+            const btn = document.getElementById('soundToggleBtn');
+            const icon = document.getElementById('soundIcon');
+            const text = document.getElementById('soundText');
+
+            if (state.soundEnabled) {
+                text.textContent = 'Sonido On';
+                icon.setAttribute('data-lucide', 'volume-2');
+                icon.className = 'w-4 h-4 text-emerald-400';
+            } else {
+                text.textContent = 'Mute';
+                icon.setAttribute('data-lucide', 'volume-x');
+                icon.className = 'w-4 h-4 text-rose-400';
+            }
+            lucide.createIcons();
+        }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log(`Error entering fullscreen: ${err.message}`);
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        // Initialize icons and initial view on load
+        window.onload = function() {
+            lucide.createIcons();
+            updateTimerDisplay();
+            showSolItem1(0);
+            showSolItem2(0);
+            triggerKaTeX();
+        };
+    </script>
+</body>
+</html>
